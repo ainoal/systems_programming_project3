@@ -1,17 +1,19 @@
 /*******************************************************************/
 /* CT30A3370 Käyttöjärjestelmät ja systeemiohjelmointi
- * wish.c
+ * wish.h
  * Aino Liukkonen
  * 24.4.2021
  */
 /*******************************************************************/
 
 /* MAX_ARGS defines the maximum number of arguments that user can give
-when running commands. It is needed for successful memory allocation 
-with calloc() */
+at a time when the shell is running. It is needed for successful memory 
+allocation with calloc() */
 #define MAX_ARGS 30
 
-void parse(char *line, char **arg);
+int parse(char *line, char **arg);
+void executeCommand(char **arg);
+int **freeArgs(char **arg, int argCount);
 
 /*******************************************************************/
 /* eof */

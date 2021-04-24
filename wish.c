@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "wish.h"
 
 int main(int argc, char *argv[]) {
@@ -15,6 +16,8 @@ int main(int argc, char *argv[]) {
 	char *buffer = NULL;
 	size_t bufferSize = 0;
 	ssize_t lineLen;
+	int argCount;
+	int i;
 	
 	switch (argc) {
 		case 1:
@@ -25,7 +28,35 @@ int main(int argc, char *argv[]) {
 					if ((arg = calloc(MAX_ARGS, sizeof(__intptr_t))) == NULL) {
 						perror("Calloc error\n"); // ???
 					}
-					parse(buffer, arg);
+					argCount = parse(buffer, arg);
+
+					printf("arg[0]");
+					printf(arg[0]);
+					if (strcmp(arg[0], "exit") == 0) {
+						exit(0);
+					} 
+					else if (strcmp(arg[0], "cd") == 0) {
+						printf("execute cd\n");
+						// execute cd command
+					}
+					else if (strcmp(arg[0], "path") == 0) {
+						printf("execute path\n");
+						// execute path command
+					}
+					else {	// Not a built-in command
+						executeCommand(arg);
+					}
+
+					for (i = 0; i <= argCount; i++) {
+						free(arg[i]);
+						arg[i] = NULL;
+					}
+
+					free(arg);
+					arg = NULL;
+
+					free(buffer);
+
 				} else { break;}
 			}
 		case 2:

@@ -1,5 +1,5 @@
 wish: wishlib.o wish.o
-	gcc wish.o wishlib.o -o reverse -Wall -pedantic
+	gcc wish.o wishlib.o -o wish -Wall -pedantic
 wish.o: wish.c wish.h
 	gcc wish.c -c -Wall -pedantic
 wishlib.o: wishlib.c wish.h
