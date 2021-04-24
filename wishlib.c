@@ -14,6 +14,9 @@
 #include <unistd.h>
 #include "wish.h"
 
+char *pathError = NULL;
+char *pathOutput = NULL;
+
 /* Function parse() parses through a line and finds where each argument 
 starts and ends to make the code robust to whitespace of various kinds */
 int parse(char *ptr, char **arg) {
@@ -40,8 +43,8 @@ int parse(char *ptr, char **arg) {
             exit(1);
         }
 		if ((arg[i] = calloc(count, sizeof(__intptr_t))) == NULL) {
-			perror("Calloc error\n"); // ???
-		}
+			perror("Calloc error\n"); // ??? ALSO ON LINE BREAKS IN PERROR
+		}								// ALSO NO PERROR ON THIS COURSE WORK :D
 
 		/* Move pointer to the start of the argument and copy memory area */
         ptr -= count;
@@ -56,7 +59,7 @@ int parse(char *ptr, char **arg) {
 	return argCount;
 }
 
-void executeCommand(char **arg) {
+void executeCommand(char **arg, int argCount) {
 	pid_t pid;
 	int status;
 	int exitStatus;
@@ -66,13 +69,21 @@ void executeCommand(char **arg) {
 		exit(1);
 	}
 
+   if (pid == 0) {
+		/* execvp() replaces replaces the current running process with 
+		a new process */
+        if (execvp(arg[0], arg) == -1) {	// EXECVP --> EXECV
+            perror("Execvp error\n");
+        }
+        exit(0);
+	}
+	else {
 	waitpid(pid, &status, 0);
-    exitStatus = WEXITSTATUS(status);
-    if (exit_status != 0) {
-		perror("Error");		// ????????????????????????
-    }
-
-	printf("executeCommand() run\n");
+		exitStatus = WEXITSTATUS(status);
+		if (exitStatus != 0) {
+			perror("Error");		// ????????????????????????
+		}
+	}
 }
 
 /*******************************************************************/

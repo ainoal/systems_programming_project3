@@ -12,8 +12,9 @@ allocation with calloc() */
 #define MAX_ARGS 30
 
 int parse(char *line, char **arg);
-void executeCommand(char **arg);
+void executeCommand(char **arg, int argCount);
 int **freeArgs(char **arg, int argCount);
+int checkRedirection(char **arg, int argCount);
 
 /*******************************************************************/
 /* eof */

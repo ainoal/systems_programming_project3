@@ -30,8 +30,6 @@ int main(int argc, char *argv[]) {
 					}
 					argCount = parse(buffer, arg);
 
-					printf("arg[0]");
-					printf(arg[0]);
 					if (strcmp(arg[0], "exit") == 0) {
 						exit(0);
 					} 
@@ -44,7 +42,7 @@ int main(int argc, char *argv[]) {
 						// execute path command
 					}
 					else {	// Not a built-in command
-						executeCommand(arg);
+						executeCommand(arg, argCount);
 					}
 
 					for (i = 0; i <= argCount; i++) {
@@ -53,7 +51,6 @@ int main(int argc, char *argv[]) {
 					}
 
 					free(arg);
-					arg = NULL;
 
 					free(buffer);
 
