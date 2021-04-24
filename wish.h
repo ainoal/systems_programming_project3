@@ -11,5 +11,7 @@ when running commands. It is needed for successful memory allocation
 with calloc() */
 #define MAX_ARGS 30
 
+void parse(char *line, char **arg);
+
 /*******************************************************************/
 /* eof */

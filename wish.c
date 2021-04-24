@@ -25,6 +25,7 @@ int main(int argc, char *argv[]) {
 					if ((arg = calloc(MAX_ARGS, sizeof(__intptr_t))) == NULL) {
 						perror("Calloc error\n"); // ???
 					}
+					parse(buffer, arg);
 				} else { break;}
 			}
 		case 2:
