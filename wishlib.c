@@ -37,8 +37,6 @@ int parse(char *ptr, char **arg) {
             count++;	// Count the number of characters in the argument
             ptr++;		// Move pointer to the next character
         }
-		//count++;
-		//*ptr++ = '\0';
 
         if (i > MAX_ARGS) {
             printf("You gave too many arguments\n");
@@ -65,7 +63,7 @@ void executeCommand(char **arg, int argCount) {
 	pid_t pid;
 	int status;
 	int exitStatus;
-	char path[100];
+	char path1[100], path2[100];
 	char program[100];
 
 	if ((pid = fork()) == -1) {
@@ -75,13 +73,17 @@ void executeCommand(char **arg, int argCount) {
 
    if (pid == 0) {
 
-		strcpy(path, "/bin/");
+		strcpy(path1, "/bin/");
 		strcpy(program, &arg[0][0]);
-		strcat(path, program);
+		strcat(path1, program);
+
+		strcpy(path2, "/usr/bin/");
+		strcpy(program, &arg[0][0]);
+		strcat(path2, program);
 
 		/* execv() replaces the current running process with 
 		a new process */
-        if (execv(path, arg) == -1) {
+        if ((execv(path1, arg) == -1) && (execv(path2, arg) == -1)) {
             perror("Execv error");
 			exit(1);
         }

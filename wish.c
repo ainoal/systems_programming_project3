@@ -18,52 +18,65 @@ int main(int argc, char *argv[]) {
 	ssize_t lineLen;
 	int argCount;
 	int i;
-	int j = 0;
-	
-	switch (argc) {
-		case 1:
-			while (1) {
-				printf("wish> ");
 
-				if ((lineLen = getline(&buffer, &bufferSize, stdin)) != -1) {
-					if ((arg = calloc(MAX_ARGS, sizeof(__intptr_t))) == NULL) {
-						perror("Calloc error\n"); // ???
-					}
-					argCount = parse(buffer, arg);
+    if (argc > 2) {
+		printf("Usage: ./wish [batch-file]\n"); 
+		exit(1);
+    }
 
-					if (strcmp(arg[0], "exit") == 0) {
-						exit(0);
-					} 
-					else if (strcmp(arg[0], "cd") == 0) {
-						printf("execute cd\n");
-						// execute cd command
-					}
-					else if (strcmp(arg[0], "path") == 0) {
-						printf("execute path\n");
-						// execute path command
-					}
-					else {	// Not a built-in command
-						executeCommand(arg, argCount);
-					}
+	/* batch mode */
+    if (argc == 2) {
+        if ((stream = fopen(argv[1], "r")) == NULL) {
+            perror("fopen");
+        }
+    }
 
-					for (i = 0; i <= argCount; i++) {
-						free(arg[i]);
-						arg[i] = NULL;
-					}
+	while (1) {
+		printf("wish> ");
 
-					free(arg);
-
-					free(buffer);
-
-				} else { break;}
+		if ((lineLen = getline(&buffer, &bufferSize, stdin)) != -1) {
+			if ((arg = calloc(MAX_ARGS, sizeof(__intptr_t))) == NULL) {
+				perror("Calloc error\n"); // ???
 			}
-		case 2:
-			// batch mode
-			break;
-		default: 	// If there are more than 1 command line arguments
-			printf("Usage: ./wish [batch-file]\n"); 
-			exit(1);
+			argCount = parse(buffer, arg);
+
+			if (strcmp(arg[0], "exit") == 0) {
+				exit(0);
+			} 
+			else if (strcmp(arg[0], "cd") == 0) {
+
+				if (environment.path_set_by_user == true)
+				{
+				    /* Cleanup previous path memory. */
+				    free(environment.paths - 5);
+				}
+				environment.paths = line + 5;
+				environment.path_set_by_user = true;
+				/* Continue so new path variable memory will be reserved. */
+				continue;
+
+			}
+			else if (strcmp(arg[0], "path") == 0) {
+				printf("execute path\n");
+				// execute path command
+			}
+			else {	// Not a built-in command
+				executeCommand(arg, argCount);
+			}
+
+			for (i = 0; i <= argCount; i++) {
+				free(arg[i]);
+				arg[i] = NULL;
+			}
+
+			free(arg);
+
+			free(buffer);
+
+		} else { break;}
 	}
+
+
 
 	return 0;
 }
