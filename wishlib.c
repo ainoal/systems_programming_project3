@@ -63,8 +63,8 @@ void executeCommand(char **arg, int argCount) {
 	pid_t pid;
 	int status;
 	int exitStatus;
-	char path1[100], path2[100];
-	char program[100];
+	char *path;
+	char program[50];
 
 	if ((pid = fork()) == -1) {
 		perror("Forking error");
@@ -73,17 +73,17 @@ void executeCommand(char **arg, int argCount) {
 
    if (pid == 0) {
 
-		strcpy(path1, "/bin/");
+		strcpy(path, "/bin/");
 		strcpy(program, &arg[0][0]);
-		strcat(path1, program);
+		strcat(path, program);
 
-		strcpy(path2, "/usr/bin/");
-		strcpy(program, &arg[0][0]);
-		strcat(path2, program);
+		//strcpy(path2, "/usr/bin/");
+		//strcpy(program, &arg[0][0]);
+		//strcat(path2, program);
 
 		/* execv() replaces the current running process with 
 		a new process */
-        if ((execv(path1, arg) == -1) && (execv(path2, arg) == -1)) {
+        if (execv(path, arg) == -1) {
             perror("Execv error");
 			exit(1);
         }

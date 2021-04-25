@@ -26,9 +26,9 @@ int main(int argc, char *argv[]) {
 
 	/* batch mode */
     if (argc == 2) {
-        if ((stream = fopen(argv[1], "r")) == NULL) {
-            perror("fopen");
-        }
+        //if ((stream = fopen(argv[1], "r")) == NULL) {
+        //    perror("fopen");
+        //}
     }
 
 	while (1) {
@@ -45,13 +45,13 @@ int main(int argc, char *argv[]) {
 			} 
 			else if (strcmp(arg[0], "cd") == 0) {
 
-				if (environment.path_set_by_user == true)
-				{
+				//if (environment.path_set_by_user == true)
+				//{
 				    /* Cleanup previous path memory. */
-				    free(environment.paths - 5);
-				}
-				environment.paths = line + 5;
-				environment.path_set_by_user = true;
+				//    free(environment.paths - 5);
+				//}
+				//environment.paths = line + 5;
+				//environment.path_set_by_user = true;
 				/* Continue so new path variable memory will be reserved. */
 				continue;
 
