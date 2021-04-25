@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
 	ssize_t lineLen;
 	int argCount;
 	int i;
+	int j = 0;
 	
 	switch (argc) {
 		case 1:
