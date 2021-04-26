@@ -82,26 +82,16 @@ void executeCommand(char **arg, int argCount) {
 		strcpy(program, &arg[0][0]);
 		strcat(&path[1][0], program);
 
-		int paths = 2;
-
 		/* execv() replaces the current running process with 
 		a new process */
-	    if (execv(&path[0][0], arg) == -1) {
-	        perror("Execv error");
-			//exit(1);
-	    }
+		for(i=0; i<10; i++) {
+	    	if (execv(&path[i][0], arg) != -1) {
+				exit(0);
+			}
+		}
 
-	    if (execv(&path[1][0], arg) == -1) {
-	        perror("Execv error");
-			//exit(1);
-	    }
-		/*for (i=0; i<paths; i++) {
-		    if (execv(&path[i], arg) == -1) {
-		        perror("Execv error");
-				//exit(1);
-		    }
-		}*/
-        exit(0);
+		perror("execv error\n");
+        exit(1);
 	}
 	else {
 		waitpid(pid, &status, 0);

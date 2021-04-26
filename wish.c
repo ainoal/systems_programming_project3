@@ -18,6 +18,8 @@ int main(int argc, char *argv[]) {
 	ssize_t lineLen;
 	int argCount;
 	int i;
+	char **path;
+	char program[50];
 
     if (argc > 2) {
 		printf("Usage: ./wish [batch-file]\n"); 
@@ -32,6 +34,15 @@ int main(int argc, char *argv[]) {
     }
 
 	while (1) {
+		/* Initialize default paths */
+		/*strcpy(&path[0][0], "/bin/");
+		strcpy(program, &arg[0][0]);
+		strcat(&path[0][0], program);
+
+		strcpy(&path[1][0], "/usr/bin/");
+		strcpy(program, &arg[0][0]);
+		strcat(&path[1][0], program);*/
+
 		printf("wish> ");
 
 		if ((lineLen = getline(&buffer, &bufferSize, stdin)) != -1) {
