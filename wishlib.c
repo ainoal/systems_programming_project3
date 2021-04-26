@@ -12,7 +12,10 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include "wish.h"
+
+static struct node *path;
 
 char *pathError = NULL;
 char *pathOutput = NULL;
@@ -63,7 +66,7 @@ void executeCommand(char **arg, int argCount) {
 	pid_t pid;
 	int status;
 	int exitStatus;
-	char *path;
+	//char *path;
 	char program[50];
 	int i;
 
@@ -73,16 +76,20 @@ void executeCommand(char **arg, int argCount) {
 	}
 
    if (pid == 0) {
+		/*if (execv(path, arg) == -1) {
+			perror("Execv error");
+		}*/
 
-		strcpy(&path[0], "/bin/");
-		strcpy(program, &arg[0][0]);
-		strcat(&path[0], program);
 
-		strcpy(&path[1], "/usr/bin/");
-		strcpy(program, &arg[0][0]);
-		strcat(&path[1], program);
+		//strcpy(&path[0], "/bin/");
+		//strcpy(program, &arg[0][0]);
+		//strcat(&path[0], program);
 
-		int paths = 2;
+		//strcpy(&path[1], "/usr/bin/");
+		//strcpy(program, &arg[0][0]);
+		//strcat(&path[1], program);
+
+		//int paths = 2;
 
 		//strcpy(path2, "/usr/bin/");
 		//strcpy(program, &arg[0][0]);
@@ -90,12 +97,12 @@ void executeCommand(char **arg, int argCount) {
 
 		/* execv() replaces the current running process with 
 		a new process */
-		for (i=0; i<paths; i++) {
-		    if (execv(&path[i], arg) == -1) {
-		        perror("Execv error");
+		//for (i=0; i<paths; i++) {
+		//    if (execv(&path[i], arg) == -1) {
+		//        perror("Execv error");
 				//exit(1);
-		    }
-		}
+		//    }
+		//}
         exit(0);
 	}
 	else {
@@ -105,6 +112,53 @@ void executeCommand(char **arg, int argCount) {
 			perror("Error with parallel commands");
 		}
 	}
+}
+
+void initializePath() {
+    addElement(&path, "/bin");
+	//addElement(&path, "/usr/bin");
+}
+
+void addElement(struct node **pHead, char* element) {
+    NODE *pNew;
+
+	pNew = malloc(sizeof(NODE));	// Add error handling (if time :D)
+    pNew->val = element;
+    pNew->pNext = NULL;
+
+    if (*pHead == NULL) {
+        *pHead = pNew;
+    } 
+	else {
+        NODE *pCurrent = *pHead;
+        while (pCurrent->pNext) {
+            pCurrent = pCurrent->pNext;
+		}
+        pCurrent->pNext = pNew;
+    }
+}
+
+char *findInPath(char *command) {
+    NODE *pCurrent = path;
+    char *res = NULL;
+	size_t totalLen;
+	char *str;
+
+    while (pCurrent != NULL) {
+        totalLen = strlen(pCurrent->val) + strlen(command) + 2;
+        str = calloc(1, totalLen);
+        memcpy(str, pCurrent->val, strlen(pCurrent->val));
+        memcpy(str + strlen(pCurrent->val), "/", 1);
+        memcpy(str + strlen(pCurrent->val) + 1, command, strlen(command));
+        if (access(str, X_OK) == 0) {
+            res = str;
+            break;
+        }
+
+        pCurrent = pCurrent->pNext;
+    }
+
+    return res;
 }
 
 /*******************************************************************/
