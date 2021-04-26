@@ -12,7 +12,6 @@
 #include "wish.h"
 
 int main(int argc, char *argv[]) {
-    char *res;
 	char **arg = NULL;	
 	char *buffer = NULL;
 	size_t bufferSize = 0;
@@ -32,8 +31,6 @@ int main(int argc, char *argv[]) {
         //}
     }
 
-	initializePath();
-
 	while (1) {
 		printf("wish> ");
 
@@ -48,8 +45,15 @@ int main(int argc, char *argv[]) {
 			} 
 			else if (strcmp(arg[0], "cd") == 0) {
 
-				//setPath(&arg[1]);
-				//continue;
+				//if (environment.path_set_by_user == true)
+				//{
+				    /* Cleanup previous path memory. */
+				//    free(environment.paths - 5);
+				//}
+				//environment.paths = line + 5;
+				//environment.path_set_by_user = true;
+				/* Continue so new path variable memory will be reserved. */
+				continue;
 
 			}
 			else if (strcmp(arg[0], "path") == 0) {
@@ -57,7 +61,6 @@ int main(int argc, char *argv[]) {
 				// execute path command
 			}
 			else {	// Not a built-in command
-				//res = findInPath(*arg);
 				executeCommand(arg, argCount);
 			}
 
