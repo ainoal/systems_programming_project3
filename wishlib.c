@@ -39,12 +39,13 @@ int parse(char *ptr, char **arg) {
         }
 
         if (i > MAX_ARGS) {
-            printf("You gave too many arguments\n");
+			fprintf(stderr, "you gave too many arguments\n");
             exit(1);
         }
 		if ((arg[i] = calloc(count, sizeof(__intptr_t))) == NULL) {
-			perror("Calloc error");
-		}								// ALSO NO PERROR ON THIS COURSE WORK :D
+			fprintf(stderr, "calloc failed\n");
+			exit(1);
+		}								
 
 		/* Move pointer to the start of the argument and copy memory area */
         ptr -= count;
@@ -68,7 +69,7 @@ void executeCommand(char **arg, int argCount) {
 	int i;
 
 	if ((pid = fork()) == -1) {
-		perror("Forking error");
+		fprintf(stderr, "forking error\n");
 		exit(1);
 	}
 
@@ -90,14 +91,14 @@ void executeCommand(char **arg, int argCount) {
 			}
 		}
 
-		perror("execv error\n");
+		fprintf(stderr, "execv error\n");	// !!!
         exit(1);
 	}
 	else {
 		waitpid(pid, &status, 0);
 		exitStatus = WEXITSTATUS(status);
 		if (exitStatus != 0) {
-			perror("Error with parallel commands");
+			fprintf(stderr, "an error has occurred\n");	// !!!
 		}
 	}
 }

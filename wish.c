@@ -20,6 +20,7 @@ int main(int argc, char *argv[]) {
 	int i;
 	char **path;
 	char program[50];
+	FILE *stream;
 
     if (argc > 2) {
 		printf("Usage: ./wish [batch-file]\n"); 
@@ -28,9 +29,10 @@ int main(int argc, char *argv[]) {
 
 	/* batch mode */
     if (argc == 2) {
-        //if ((stream = fopen(argv[1], "r")) == NULL) {
-        //    perror("fopen");
-        //}
+        if ((stream = fopen(argv[1], "r")) == NULL) {
+            fprintf(stderr, "cannot open batch file\n");
+			exit(1);
+        }
     }
 
 	while (1) {
@@ -47,7 +49,8 @@ int main(int argc, char *argv[]) {
 
 		if ((lineLen = getline(&buffer, &bufferSize, stdin)) != -1) {
 			if ((arg = calloc(MAX_ARGS, sizeof(__intptr_t))) == NULL) {
-				perror("Calloc error\n"); // ???
+				fprintf(stderr, "calloc failed\n");
+				exit(1);
 			}
 			argCount = parse(buffer, arg);
 
