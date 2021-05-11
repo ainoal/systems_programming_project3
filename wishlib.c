@@ -81,6 +81,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		strcpy(program, &arg[0][0]);
 		strcat(&path[1][0], program);
 
+
 		/* execv() replaces the current running process with 
 		a new process */
 		for(i=0; i<10; i++) {
@@ -94,6 +95,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 	else {
 		waitpid(pid, &status, 0);
+		// TODO access()
 		exitStatus = WEXITSTATUS(status);
 		if (exitStatus != 0) {
 			fprintf(stderr, "an error has occurred\n");	// !!!

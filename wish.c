@@ -58,15 +58,14 @@ int main(int argc, char *argv[]) {
 				printf("execute cd\n");
 				// TODO cd program
 
-
 			}
 			else if (strcmp(arg[0], "path") == 0) {
 				printf("execute path\n");
-				// execute path command
 
 				for (i=1; i<argCount; i++) {
-					strcpy(&path[i][0], arg[i]); // TODO add "/" at the end
-					printf("%s\n", path[i]);
+					strcpy(&path[i-1][0], arg[i]); // TODO add "/" at the end
+					strcat(path[i-1], "/");
+					printf("%s\n", path[i-1]);
 				}
 			}
 			else {	// Not a built-in command
