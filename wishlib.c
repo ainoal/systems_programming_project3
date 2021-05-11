@@ -81,25 +81,24 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		strcat(&path[1][0], program);
 		
 
-		/* execv() replaces the current running process with 
-		a new process */
 		for(i=0; i<argCount; i++) {
 			if ((access(&path[i][0], X_OK)) != 0) {
 				exit(1);
-			}  	
+			}
+			/* execv() replaces the current running process with a new process */  	
 			if (execv(&path[i][0], arg) != -1) {
 				exit(0);
 			}
 		}
 
-		fprintf(stderr, "execv error\n");	// !!!
+		write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
         exit(1);
 	}
 	else {
 		waitpid(pid, &status, 0);
 		exitStatus = WEXITSTATUS(status);
 		if (exitStatus != 0) {
-			fprintf(stderr, "an error has occurred\n");	// !!!
+			write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
 		}
 	}
 }
@@ -116,7 +115,7 @@ void cd(int argCount, char *path) {
 	}
 	else {
 		if (chdir(path)) {
-			printf("cd: an error has occurred\n");
+			write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
 		}
 	}
 }
@@ -124,9 +123,15 @@ void cd(int argCount, char *path) {
 void setPath(int argCount, char **arg, char path[10][50]) {
 	int i;
 
-	for (i=1; i<argCount; i++) {
-		strcpy(&path[i-1][0], arg[i]);
-		strcat(path[i-1], "/");
+	if (argCount > 10) {
+		fprintf(stderr, "Please give maximum 10 paths!\n");
+	} 
+	else {
+		for (i=1; i<argCount; i++) {
+			strcpy(&path[i-1][0], arg[i]);
+			strcat(path[i-1], "/");
+			printf("jee\n");
+		}
 	}
 }
 

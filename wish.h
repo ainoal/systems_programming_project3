@@ -10,6 +10,7 @@
 at a time when the shell is running. It is needed for successful memory 
 allocation with calloc() */
 #define MAX_ARGS 30
+#define ERROR_MESSAGE  "An error has occurred\n"
 
 int parse(char *line, char **arg);
 void executeCommand(char **arg, int argCount, char path[10][50]);
