@@ -49,27 +49,18 @@ int main(int argc, char *argv[]) {
 				fprintf(stderr, "calloc failed\n");
 				exit(1);
 			}
+
 			argCount = parse(buffer, arg);	// Includes the program name as arg[0]
 
 			if (strcmp(arg[0], "exit") == 0) {
 				exit(0);
 			} 
 			else if (strcmp(arg[0], "cd") == 0) {
-				if (argCount <= 1) {
-					printf("Too few arguments!\n");
-					printf("cd always takes exactly 1 argument\n");
-				} 
-				else if (argCount > 2) {
-					printf("Too many arguments!\n");
-					printf("cd always takes exactly 1 argument\n");
-				}
-				else {
-					if (chdir(arg[1])) {
-						printf("cd: an error has occurred\n");
-					}
-				}
+				cd(argCount, arg[1]);
+
 			}
 			else if (strcmp(arg[0], "path") == 0) {
+				//path = setPath(argCount, arg, path);
 				for (i=1; i<argCount; i++) {
 					strcpy(&path[i-1][0], arg[i]);
 					strcat(path[i-1], "/");
@@ -85,7 +76,6 @@ int main(int argc, char *argv[]) {
 			}
 
 			free(arg);
-
 			free(buffer);
 
 		} else { break;}
