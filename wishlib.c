@@ -86,12 +86,12 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 
 	pathOutput = checkRedirection(arg, argCount);
-	    if (pathOutput != NULL) {
-	        if ((fileOutput = fopen(pathOutput, "w")) == NULL) {
-	            printf("file opening error\n");
-	        }
-			argCount -= 2;
-	    }
+    if (pathOutput != NULL) {
+        if ((fileOutput = fopen(pathOutput, "w")) == NULL) {
+            printf("file opening error\n");
+        }
+		argCount -= 2;
+    }
 
 	if (pid == 0) {
 		strcpy(program, &arg[0][0]);
@@ -113,7 +113,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 			}
 
 			/* If next "arg" is redirection, redirect the output */
-			if ((strcmp(arg[i+2], pathOutput) == 0) && pathOutput != NULL) {
+			else if ((strcmp(arg[i+2], pathOutput) == 0) && pathOutput != NULL) {
 				strcat(&path[i][0], program);
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +153,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 			} 
 		}
 
-		printf("tää error?\n");
         exit(1);
 	}
 	else {
@@ -161,7 +160,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		exitStatus = WEXITSTATUS(status);
 		if (exitStatus != 0) {
 			write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
-			printf("tämä error?\n");
 		}
 	}
 }
