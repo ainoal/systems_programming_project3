@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "wish.h"
 
 int main(int argc, char *argv[]) {
@@ -19,7 +20,6 @@ int main(int argc, char *argv[]) {
 	int argCount;
 	int i;
 	char path[10][50];
-	char *program[50];
 	FILE *stream;
 
 	// TODO correct initial path
@@ -49,19 +49,27 @@ int main(int argc, char *argv[]) {
 				fprintf(stderr, "calloc failed\n");
 				exit(1);
 			}
-			argCount = parse(buffer, arg);
+			argCount = parse(buffer, arg);	// Includes the program name as arg[0]
 
 			if (strcmp(arg[0], "exit") == 0) {
 				exit(0);
 			} 
 			else if (strcmp(arg[0], "cd") == 0) {
-				printf("execute cd\n");
-				// TODO cd program
-
+				if (argCount <= 1) {
+					printf("Too few arguments!\n");
+					printf("cd always takes exactly 1 argument\n");
+				} 
+				else if (argCount > 2) {
+					printf("Too many arguments!\n");
+					printf("cd always takes exactly 1 argument\n");
+				}
+				else {
+					if (chdir(arg[1])) {
+						printf("cd: an error has occurred\n");
+					}
+				}
 			}
 			else if (strcmp(arg[0], "path") == 0) {
-				printf("execute path\n");
-
 				for (i=1; i<argCount; i++) {
 					strcpy(&path[i-1][0], arg[i]);
 					strcat(path[i-1], "/");
