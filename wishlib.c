@@ -103,7 +103,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 }
 
-void cd(int argCount, char path) {
+void cd(int argCount, char *path) {
 	if (argCount <= 1) {
 		printf("Too few arguments!\n");
 		printf("cd always takes exactly 1 argument\n");
