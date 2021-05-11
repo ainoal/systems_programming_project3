@@ -15,7 +15,7 @@ allocation with calloc() */
 
 int parse(char *line, char **arg);
 void executeCommand(char **arg, int argCount, char path[10][50]);
-int checkRedirection(char **arg, int argCount);
+char *checkRedirection(char **arg, int argCount);
 void cd(int argCount, char *path);
 void setPath(int argCount, char ** arg, char path[10][50]);
 

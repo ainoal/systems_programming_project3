@@ -14,9 +14,6 @@
 #include <unistd.h>
 #include "wish.h"
 
-char *pathError = NULL;
-char *pathOutput = NULL;
-
 /* Function parse() parses through a line and finds where each argument 
 starts and ends to make the code robust to whitespace of various kinds */
 int parse(char *ptr, char **arg) {
@@ -60,12 +57,28 @@ int parse(char *ptr, char **arg) {
 	return argCount;
 }
 
+char *checkRedirection(char **arg, int argCount) {
+	int i;
+	char *pathOutput = NULL;
+
+	for (i=0; i<argCount; i++) {	
+		if (arg[i][0] == '>') {
+			pathOutput = arg[i + 1];
+			printf("%s\n", pathOutput);
+		}
+	}
+
+	return pathOutput;
+}
+
 // TODO Remove duplicate error msg
 void executeCommand(char **arg, int argCount, char path[10][50]) {
 	pid_t pid;
 	int status;
 	int exitStatus;
 	char program[50];
+	char *pathOutput = NULL;
+	FILE *fileOutput;
 	int i;
 
 	if ((pid = fork()) == -1) {
@@ -73,13 +86,31 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		exit(1);
 	}
 
+	pathOutput = checkRedirection(arg, argCount);
+	//printf("%s\n", pathOutput);
+	argCount -= 1;
+        if (pathOutput != NULL) {
+            if ((fileOutput = fopen(pathOutput, "w")) == NULL) {
+                printf("open error\n");
+            }
+			// TODO Kirjoita tiedostoon	
+			fprintf(fileOutput, "TIEDOSTON KIRJOITUS\n");
+			
+            fclose(fileOutput);
+
+			for (i=argCount; i<sizeof(arg); i++) {
+				free(arg[i]);
+				arg[i] = NULL;
+			}
+        }
+
    if (pid == 0) {
 
 		strcpy(program, &arg[0][0]);
 
 		for(i=0; i<argCount; i++) {
 			if ((access(&path[i][0], X_OK)) != 0) {
-				write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
+				//write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
 				exit(1);
 			}
 
@@ -104,7 +135,8 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 }
 
-/* The built-in command cd  takes exactly one argument. */
+/* The built-in command cd changes directories. It takes exactly one argument,
+which specifies the directory where to move. */
 void cd(int argCount, char *path) {
 	if (argCount <= 1) {
 		printf("Too few arguments!\n");
@@ -121,6 +153,8 @@ void cd(int argCount, char *path) {
 	}
 }
 
+/* The built-in command path changes the path(s) where wish looks for 
+executable programs. */
 void setPath(int argCount, char **arg, char path[10][50]) {
 	int i;
 
