@@ -90,22 +90,31 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	        if ((fileOutput = fopen(pathOutput, "w")) == NULL) {
 	            printf("file opening error\n");
 	        }
+			argCount -= 2;
 	    }
 
-   if (pid == 0) {
-
+	if (pid == 0) {
 		strcpy(program, &arg[0][0]);
 
 		for(i=0; i<argCount; i++) {
-			if ((access(&path[i][0], X_OK)) != 0) {
-				//write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
-				exit(1);
+			
+			if (pathOutput == NULL) {
+				if ((access(&path[i][0], X_OK)) != 0) {
+					//write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
+					exit(1);
+				}
+
+				strcat(&path[i][0], program);
+
+				/* execv() replaces the current running process with a new process */  	
+				if (execv(&path[i][0], arg) != -1) {
+					exit(0);
+				}
 			}
 
-			strcat(&path[i][0], program);
-
 			/* If next "arg" is redirection, redirect the output */
-			if (strcmp(arg[i+2], pathOutput) == 0) {
+			if ((strcmp(arg[i+2], pathOutput) == 0) && pathOutput != NULL) {
+				strcat(&path[i][0], program);
 
 ////////////////////////////////////////////////////////////////////////////////////
 				// https://stackoverflow.com/questions/8516823/redirecting-output-to-a-file-in-c
@@ -124,7 +133,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 				if (-1 == dup2(out, fileno(stdout))) { perror("cannot redirect stdout");  }
 				if (-1 == dup2(err, fileno(stderr))) { perror("cannot redirect stderr");  }
 
-				puts("doing an ls or something now");
+				puts("Heyo?");
 
 				fflush(stdout); close(out);
 				fflush(stderr); close(err);
@@ -142,14 +151,9 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 				printf("ONNISTUIN\n");
 				exit(0);
 			} 
-
-			/* execv() replaces the current running process with a new process */  	
-			if (execv(&path[i][0], arg) != -1) {
-				exit(0);
-			}
 		}
 
-		write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
+		printf("tää error?\n");
         exit(1);
 	}
 	else {
@@ -157,6 +161,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		exitStatus = WEXITSTATUS(status);
 		if (exitStatus != 0) {
 			write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
+			printf("tämä error?\n");
 		}
 	}
 }
