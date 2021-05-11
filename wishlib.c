@@ -12,6 +12,7 @@
 #include <sys/wait.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include "wish.h"
 
 /* Function parse() parses through a line and finds where each argument 
@@ -64,14 +65,12 @@ char *checkRedirection(char **arg, int argCount) {
 	for (i=0; i<argCount; i++) {	
 		if (arg[i][0] == '>') {
 			pathOutput = arg[i + 1];
-			printf("%s\n", pathOutput);
 		}
 	}
-
 	return pathOutput;
 }
 
-// TODO Remove duplicate error msg
+/* Function to execute other than built-in commands */
 void executeCommand(char **arg, int argCount, char path[10][50]) {
 	pid_t pid;
 	int status;
@@ -87,22 +86,11 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 
 	pathOutput = checkRedirection(arg, argCount);
-	//printf("%s\n", pathOutput);
-	argCount -= 1;
-        if (pathOutput != NULL) {
-            if ((fileOutput = fopen(pathOutput, "w")) == NULL) {
-                printf("open error\n");
-            }
-			// TODO Kirjoita tiedostoon	
-			fprintf(fileOutput, "TIEDOSTON KIRJOITUS\n");
-			
-            fclose(fileOutput);
-
-			for (i=argCount; i<sizeof(arg); i++) {
-				free(arg[i]);
-				arg[i] = NULL;
-			}
-        }
+	    if (pathOutput != NULL) {
+	        if ((fileOutput = fopen(pathOutput, "w")) == NULL) {
+	            printf("file opening error\n");
+	        }
+	    }
 
    if (pid == 0) {
 
@@ -114,8 +102,46 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 				exit(1);
 			}
 
-			/* Search for the correct program in the path */
 			strcat(&path[i][0], program);
+
+			/* If next "arg" is redirection, redirect the output */
+			if (strcmp(arg[i+2], pathOutput) == 0) {
+
+////////////////////////////////////////////////////////////////////////////////////
+				// https://stackoverflow.com/questions/8516823/redirecting-output-to-a-file-in-c
+				// replace cout.log with output file
+				// replace error file with what???
+
+				int out = open("cout.log", O_RDWR|O_CREAT|O_TRUNC, 0600);
+				if (-1 == out) { perror("opening cout.log");  }
+
+				int err = open("cerr.log", O_RDWR|O_CREAT|O_TRUNC, 0600);
+				if (-1 == err) { perror("opening cerr.log"); }
+
+				int save_out = dup(fileno(stdout));
+				int save_err = dup(fileno(stderr));
+
+				if (-1 == dup2(out, fileno(stdout))) { perror("cannot redirect stdout");  }
+				if (-1 == dup2(err, fileno(stderr))) { perror("cannot redirect stderr");  }
+
+				puts("doing an ls or something now");
+
+				fflush(stdout); close(out);
+				fflush(stderr); close(err);
+
+				dup2(save_out, fileno(stdout));
+				dup2(save_err, fileno(stderr));
+
+				close(save_out);
+				close(save_err);
+
+				puts("back to normal output");
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+				printf("ONNISTUIN\n");
+				exit(0);
+			} 
 
 			/* execv() replaces the current running process with a new process */  	
 			if (execv(&path[i][0], arg) != -1) {
