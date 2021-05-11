@@ -18,9 +18,15 @@ int main(int argc, char *argv[]) {
 	ssize_t lineLen;
 	int argCount;
 	int i;
-	char **path;
-	char program[50];
+	char path[10][50];
+	char *program[50];
 	FILE *stream;
+
+	/* Initialize default paths */
+	strcpy(&path[0][0], "/bin/");
+	strcpy(&path[1][0], "/usr/bin/");
+
+	printf("hei\n");
 
     if (argc > 2) {
 		printf("Usage: ./wish [batch-file]\n"); 
@@ -36,14 +42,6 @@ int main(int argc, char *argv[]) {
     }
 
 	while (1) {
-		/* Initialize default paths */
-		/*strcpy(&path[0][0], "/bin/");
-		strcpy(program, &arg[0][0]);
-		strcat(&path[0][0], program);
-
-		strcpy(&path[1][0], "/usr/bin/");
-		strcpy(program, &arg[0][0]);
-		strcat(&path[1][0], program);*/
 
 		printf("wish> ");
 
@@ -75,7 +73,7 @@ int main(int argc, char *argv[]) {
 				// execute path command
 			}
 			else {	// Not a built-in command
-				executeCommand(arg, argCount);
+				executeCommand(arg, argCount, path);
 			}
 
 			for (i = 0; i <= argCount; i++) {

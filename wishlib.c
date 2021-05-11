@@ -60,11 +60,11 @@ int parse(char *ptr, char **arg) {
 	return argCount;
 }
 
-void executeCommand(char **arg, int argCount) {
+void executeCommand(char **arg, int argCount, char path[10][50]) {
 	pid_t pid;
 	int status;
 	int exitStatus;
-	char path[10][50];
+	//char path[10][50];
 	char program[50];
 	int i;
 
@@ -75,11 +75,9 @@ void executeCommand(char **arg, int argCount) {
 
    if (pid == 0) {
 
-		strcpy(&path[0][0], "/bin/");
 		strcpy(program, &arg[0][0]);
 		strcat(&path[0][0], program);
 
-		strcpy(&path[1][0], "/usr/bin/");
 		strcpy(program, &arg[0][0]);
 		strcat(&path[1][0], program);
 
