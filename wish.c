@@ -22,11 +22,10 @@ int main(int argc, char *argv[]) {
 	char *program[50];
 	FILE *stream;
 
+	// TODO correct initial path
 	/* Initialize default paths */
 	strcpy(&path[0][0], "/bin/");
-	strcpy(&path[1][0], "/usr/bin/");
-
-	printf("hei\n");
+	//strcpy(&path[1][0], "/usr/bin/");
 
     if (argc > 2) {
 		printf("Usage: ./wish [batch-file]\n"); 
@@ -56,21 +55,19 @@ int main(int argc, char *argv[]) {
 				exit(0);
 			} 
 			else if (strcmp(arg[0], "cd") == 0) {
+				printf("execute cd\n");
+				// TODO cd program
 
-				//if (environment.path_set_by_user == true)
-				//{
-				    /* Cleanup previous path memory. */
-				//    free(environment.paths - 5);
-				//}
-				//environment.paths = line + 5;
-				//environment.path_set_by_user = true;
-				/* Continue so new path variable memory will be reserved. */
-				continue;
 
 			}
 			else if (strcmp(arg[0], "path") == 0) {
 				printf("execute path\n");
 				// execute path command
+
+				for (i=1; i<argCount; i++) {
+					strcpy(&path[i][0], arg[i]); // TODO add "/" at the end
+					printf("%s\n", path[i]);
+				}
 			}
 			else {	// Not a built-in command
 				executeCommand(arg, argCount, path);
