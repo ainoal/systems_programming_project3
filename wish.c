@@ -63,9 +63,8 @@ int main(int argc, char *argv[]) {
 				printf("execute path\n");
 
 				for (i=1; i<argCount; i++) {
-					strcpy(&path[i-1][0], arg[i]); // TODO add "/" at the end
+					strcpy(&path[i-1][0], arg[i]);
 					strcat(path[i-1], "/");
-					printf("%s\n", path[i-1]);
 				}
 			}
 			else {	// Not a built-in command
