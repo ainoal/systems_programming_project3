@@ -81,6 +81,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		strcpy(program, &arg[0][0]);
 		strcat(&path[1][0], program);
 
+		// TODO access()
 
 		/* execv() replaces the current running process with 
 		a new process */
@@ -95,7 +96,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 	else {
 		waitpid(pid, &status, 0);
-		// TODO access()
 		exitStatus = WEXITSTATUS(status);
 		if (exitStatus != 0) {
 			fprintf(stderr, "an error has occurred\n");	// !!!
@@ -103,6 +103,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 }
 
+/* The built-in command cd  takes exactly one argument. */
 void cd(int argCount, char *path) {
 	if (argCount <= 1) {
 		printf("Too few arguments!\n");
@@ -116,6 +117,15 @@ void cd(int argCount, char *path) {
 		if (chdir(path)) {
 			printf("cd: an error has occurred\n");
 		}
+	}
+}
+
+void path(int argCount, char **arg, char path[10][50]) {
+	int i;
+
+	for (i=1; i<argCount; i++) {
+		strcpy(&path[i-1][0], arg[i]);
+		strcat(path[i-1], "/");
 	}
 }
 

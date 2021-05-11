@@ -16,7 +16,7 @@ void executeCommand(char **arg, int argCount, char path[10][50]);
 int **freeArgs(char **arg, int argCount);
 int checkRedirection(char **arg, int argCount);
 void cd(int argCount, char *path);
-//char **setPath(int argCount, char ** arg, char path[10][50])
+void path(int argCount, char ** arg, char path[10][50]);
 
 /*******************************************************************/
 /* eof */
