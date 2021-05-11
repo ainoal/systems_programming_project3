@@ -64,7 +64,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	pid_t pid;
 	int status;
 	int exitStatus;
-	//char path[10][50];
 	char program[50];
 	int i;
 
@@ -80,13 +79,15 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 
 		strcpy(program, &arg[0][0]);
 		strcat(&path[1][0], program);
-
-		// TODO access()
+		
 
 		/* execv() replaces the current running process with 
 		a new process */
-		for(i=0; i<10; i++) {
-	    	if (execv(&path[i][0], arg) != -1) {
+		for(i=0; i<argCount; i++) {
+			if ((access(&path[i][0], X_OK)) != 0) {
+				exit(1);
+			}  	
+			if (execv(&path[i][0], arg) != -1) {
 				exit(0);
 			}
 		}
@@ -120,7 +121,7 @@ void cd(int argCount, char *path) {
 	}
 }
 
-void path(int argCount, char **arg, char path[10][50]) {
+void setPath(int argCount, char **arg, char path[10][50]) {
 	int i;
 
 	for (i=1; i<argCount; i++) {

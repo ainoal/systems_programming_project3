@@ -60,7 +60,7 @@ int main(int argc, char *argv[]) {
 
 			}
 			else if (strcmp(arg[0], "path") == 0) {
-				path(argCount, arg, path);
+				setPath(argCount, arg, path);
 				for (i=1; i<argCount; i++) {
 					strcpy(&path[i-1][0], arg[i]);
 					strcat(path[i-1], "/");
