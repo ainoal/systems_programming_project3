@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
 	int argCount;
 	int i;
 	char path[10][50];
-	FILE *stream;
+	FILE *stream = stdin;
 
 	// TODO correct initial path
 	/* Initialize default paths */
@@ -60,25 +60,24 @@ int main(int argc, char *argv[]) {
 
 			}
 			else if (strcmp(arg[0], "path") == 0) {
+				// TODO max args -> 30
 				setPath(argCount, arg, path);
-				for (i=1; i<argCount; i++) {
-					strcpy(&path[i-1][0], arg[i]);
-					strcat(path[i-1], "/");
-				}
 			}
 			else {	// Not a built-in command
 				executeCommand(arg, argCount, path);
 			}
 
+			/* Free memory */
 			for (i = 0; i <= argCount; i++) {
 				free(arg[i]);
 				arg[i] = NULL;
 			}
-
 			free(arg);
+			arg = NULL;
+
 			free(buffer);
 
-		} else { break;}
+		} else { break; }
 	}
 
 

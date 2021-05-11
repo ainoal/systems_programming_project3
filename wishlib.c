@@ -60,6 +60,7 @@ int parse(char *ptr, char **arg) {
 	return argCount;
 }
 
+// TODO Remove duplicate error msg
 void executeCommand(char **arg, int argCount, char path[10][50]) {
 	pid_t pid;
 	int status;
@@ -75,16 +76,16 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
    if (pid == 0) {
 
 		strcpy(program, &arg[0][0]);
-		strcat(&path[0][0], program);
-
-		strcpy(program, &arg[0][0]);
-		strcat(&path[1][0], program);
-		
 
 		for(i=0; i<argCount; i++) {
 			if ((access(&path[i][0], X_OK)) != 0) {
+				write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
 				exit(1);
 			}
+
+			/* Search for the correct program in the path */
+			strcat(&path[i][0], program);
+
 			/* execv() replaces the current running process with a new process */  	
 			if (execv(&path[i][0], arg) != -1) {
 				exit(0);
@@ -130,7 +131,6 @@ void setPath(int argCount, char **arg, char path[10][50]) {
 		for (i=1; i<argCount; i++) {
 			strcpy(&path[i-1][0], arg[i]);
 			strcat(path[i-1], "/");
-			printf("jee\n");
 		}
 	}
 }
