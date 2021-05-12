@@ -93,62 +93,31 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 	}
 
 	pathOutput = checkRedirection(arg, argCount);
-    /*if (pathOutput != NULL) {
-        if ((fileOutput = fopen(pathOutput, "w")) == NULL) {
-            printf("file opening error\n");
-        }
-		argCount -= 2;
-    }*/
 
 	if (pid == 0) {
 		strcpy(program, &arg[0][0]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-		if (pathOutput == NULL) {
-			if ((access(&path[i][0], X_OK)) != 0) {
-				//write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
-				exit(1);
-			}
-
-			strcat(&path[i][0], program);
-
-			/* execv() replaces the current running process with a new process */  	
-			/*if (execv(&path[i][0], arg) != -1) {
-				exit(0);
-			}*/
+		if ((access(&path[i][0], X_OK)) != 0) {
+			//write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
+			exit(1);
 		}
 
+		strcat(&path[i][0], program);
+
+
 		/* Redirection */
-		else {
-			//int oldStdout = dup(1);
+		if (pathOutput != NULL) {
 			argCount -= 2;
 
-			//FILE *fp1 = freopen("output.txt", "w", stdout);
-			strcat(&path[i][0], program);
 			printf("%s\n", path[i]);
 
-		////////////////////////////////////////////////////////////////////////////////////
-			// https://stackoverflow.com/questions/8516823/redirecting-output-to-a-file-in-c
-			// replace cout.log with output file
-			// replace error file with what???
-
-
+			/* Output redirection, reference:
+			https://stackoverflow.com/questions/8516823/redirecting-output-to-a-file-in-c */
 			if ((iFileOutput = open(pathOutput, O_CREAT | O_WRONLY | O_TRUNC, 0600)) == -1) {
-				perror("error opening file");
+				fprintf(stderr, "error opening file for redirection\n");
 			}
 			if (dup2(iFileOutput, fileno(stdout)) == -1) {
-				perror("dup2 error");
+				fprintf(stderr, "error with output redirection\n");
 			}
 			close(iFileOutput);
 
@@ -156,8 +125,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 				free(arg[a]);
 				arg[a] = NULL;
 			}
-
-		///////////////////////////////////////////////////////////////////////////////////////
 
 		} 
 
@@ -168,120 +135,9 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		for(a=0; a<argCount; a++) {
-			printf("%d\n", i);
-			
-			/*if (pathOutput == NULL) {
-				if ((access(&path[i][0], X_OK)) != 0) {
-					//write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
-					exit(1);
-				}
-
-				strcat(&path[i][0], program);
-
-				/* execv() replaces the current running process with a new process */  	
-				/*if (execv(&path[i][0], arg) != -1) {
-					exit(0);
-				}*/
-			}
-
-			/* Redirection */
-			//else {
-				//int oldStdout = dup(1);
-				//argCount -= 2;
-
-				//FILE *fp1 = freopen("output.txt", "w", stdout);
-				//strcat(&path[i][0], program);
-
-////////////////////////////////////////////////////////////////////////////////////
-				// https://stackoverflow.com/questions/8516823/redirecting-output-to-a-file-in-c
-				// replace cout.log with output file
-				// replace error file with what???
-
-				/*int out = open("cout.log", O_RDWR|O_CREAT|O_TRUNC, 0600);
-				if (-1 == out) { perror("opening cout.log");  }
-
-				int err = open("cerr.log", O_RDWR|O_CREAT|O_TRUNC, 0600);
-				if (-1 == err) { perror("opening cerr.log"); }
-
-				int save_out = dup(fileno(stdout));
-				int save_err = dup(fileno(stderr));
-
-				if (-1 == dup2(out, fileno(stdout))) { perror("cannot redirect stdout");  }
-				if (-1 == dup2(err, fileno(stderr))) { perror("cannot redirect stderr");  }
-
-				puts("Hey hi?");
-
-				fflush(stdout); close(out);
-				fflush(stderr); close(err);
-
-				dup2(save_out, fileno(stdout));
-				dup2(save_err, fileno(stderr));
-
-				close(save_out);
-				close(save_err);
-
-				for (i = argCount; i < sizeof(arg); i++) {
-					free(arg[i]);
-					arg[i] = NULL;
-				}
-
-
-				puts("output");*/
-				
-				/*FILE *fp2 = fdopen(oldStdout, "w");
-				fclose(stdout);
-				stdout = fp2;
-				close(oldStdout);*/
-
-                /*if ((iFileOutput = open(pathOutput, O_CREAT | O_WRONLY | O_TRUNC, 0600)) == -1) {
-                    perror("open");
-                }
-                if (dup2(iFileOutput, 1) == -1) {
-                    perror("dup2");
-                }
-                close(iFileOutput);
-
-				for (i = argCount; i < sizeof(arg); i++) {
-					printf("%s\n", arg[i]);
-					free(arg[i]);
-					arg[i] = NULL;
-				}*/
-
-///////////////////////////////////////////////////////////////////////////////////////
-
-			//} 
-
-			/* execv() replaces the current running process with a new process */  	
-			/*if (execv(&path[i][0], arg) == -1) {
-				exit(1);
-				printf("jee\n");
-			}
-			printf("here?\n");
-		}*/
-
-		//printf("exit(0)\n");
-        //exit(0);
+			// TODO fix issue with multiple commands
+		}
 	}
 	else {
 		waitpid(pid, &status, 0);
