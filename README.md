@@ -1,6 +1,6 @@
 # Käyttöjärjestelmät ja systeemiohjelmointi: project 3
 Unix shell - a part of my systems programming course project</br></br>
-This is a basic shell "wish".
+This is a basic shell "wish". The project instructions can be found in [ostep-projects repository](https://github.com/remzi-arpacidusseau/ostep-projects/tree/master/processes-shell)
 
 ## Compilation
 The repository includes a Makefile, and the program can be compiled by runnning "make" on the command line.
