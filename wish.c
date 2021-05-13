@@ -39,10 +39,12 @@ int main(int argc, char *argv[]) {
     }
 
 	while (1) {
+		
+		if(stream == stdin) {
+			printf("wish> ");
+		}
 
-		printf("wish> ");
-
-		if ((lineLen = getline(&buffer, &bufferSize, stdin)) != -1) {
+		if ((lineLen = getline(&buffer, &bufferSize, stream)) != -1) {
 			if ((arg = calloc(MAX_ARGS, sizeof(__intptr_t))) == NULL) {
 				fprintf(stderr, "calloc failed\n");
 				exit(1);
