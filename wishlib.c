@@ -30,12 +30,6 @@ int parse(char *ptr, char **arg) {
             *ptr++ = '\0';
         }
 
-		/* Break when encountering redirection character */
-		/*if (*ptr == '>') {
-			printf("parsing: redirection\n");
-			break;
-		}*/
-
 		/* While pointer points to a non-whitespace character */
         while (*ptr != ' ' && *ptr != '\t' && *ptr != '\0' && *ptr != '\n') {
             count++;	// Count the number of characters in the argument
@@ -98,7 +92,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		strcpy(program, &arg[0][0]);
 
 		if ((access(&path[i][0], X_OK)) != 0) {
-			//write(STDERR_FILENO, ERROR_MESSAGE, strlen(ERROR_MESSAGE)); 
 			exit(1);
 		}
 
@@ -108,8 +101,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		/* Redirection */
 		if (pathOutput != NULL) {
 			argCount -= 2;
-
-			printf("%s\n", path[i]);
 
 			/* Output redirection, reference:
 			https://stackoverflow.com/questions/8516823/redirecting-output-to-a-file-in-c */
@@ -132,11 +123,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		if (execv(&path[i][0], arg) == -1) {
 			exit(1);
 			printf("jee\n");
-		}
-
-
-		for(a=0; a<argCount; a++) {
-			// TODO fix issue with multiple commands
 		}
 	}
 	else {

@@ -22,17 +22,15 @@ int main(int argc, char *argv[]) {
 	char path[10][50];
 	FILE *stream = stdin;
 
-	// TODO correct initial path
-	/* Initialize default paths */
+	/* Initialize default path */
 	strcpy(&path[0][0], "/bin/");
-	//strcpy(&path[1][0], "/usr/bin/");
 
     if (argc > 2) {
 		printf("Usage: ./wish [batch-file]\n"); 
 		exit(1);
     }
 
-	/* batch mode */
+	/* Batch mode takes input from a batch file given as a command-line argument */
     if (argc == 2) {
         if ((stream = fopen(argv[1], "r")) == NULL) {
             fprintf(stderr, "cannot open batch file\n");
@@ -60,7 +58,6 @@ int main(int argc, char *argv[]) {
 
 			}
 			else if (strcmp(arg[0], "path") == 0) {
-				// TODO max args -> 30
 				setPath(argCount, arg, path);
 			}
 			else {	// Not a built-in command
