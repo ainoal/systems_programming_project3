@@ -122,7 +122,6 @@ void executeCommand(char **arg, int argCount, char path[10][50]) {
 		/* execv() replaces the current running process with a new process */  	
 		if (execv(&path[i][0], arg) == -1) {
 			exit(1);
-			printf("jee\n");
 		}
 	}
 	else {
